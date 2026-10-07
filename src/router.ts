@@ -1,4 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import App from './App.vue';
+import CheckinView from './views/CheckinView.vue';
+import ExposureView from './views/ExposureView.vue';
 
-export const router = createRouter({ history: createWebHistory(), routes: [{ path: '/', component: App }] });
+export const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: CheckinView },
+    { path: '/exposure', component: ExposureView }
+  ]
+});
