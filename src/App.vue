@@ -6,10 +6,11 @@ import { useForm } from 'vee-validate';
 import { z } from 'zod';
 import { api } from './services/api';
 import { useExhibitionStore, type Exhibit } from './stores/exhibition';
+import ExposureBudget from './components/ExposureBudget.vue';
 
 const store = useExhibitionStore();
 const online = useOnline();
-const tab = ref<'checkin' | 'environment' | 'discrepancy'>('checkin');
+const tab = ref<'checkin' | 'environment' | 'discrepancy' | 'exposure'>('checkin');
 const dialog = ref(false);
 const selected = ref<Exhibit | null>(null);
 const schema = toTypedSchema(z.object({ code: z.string().min(2), name: z.string().min(2), lender: z.string().min(2), hall: z.string().min(2) }));
@@ -47,7 +48,7 @@ function stageLabel(stage: Exhibit['stage']) { return { arrival: '到场点交',
 
         <v-card>
           <v-tabs v-model="tab" color="deep-purple">
-            <v-tab value="checkin">{{ $t('checkIn') }}</v-tab><v-tab value="environment">{{ $t('environment') }}</v-tab><v-tab value="discrepancy">{{ $t('discrepancies') }}</v-tab>
+            <v-tab value="checkin">{{ $t('checkIn') }}</v-tab><v-tab value="environment">{{ $t('environment') }}</v-tab><v-tab value="discrepancy">{{ $t('discrepancies') }}</v-tab><v-tab value="exposure">{{ $t('exposure') }}</v-tab>
           </v-tabs>
           <v-window v-model="tab">
             <v-window-item value="checkin">
@@ -72,6 +73,9 @@ function stageLabel(stage: Exhibit['stage']) { return { arrival: '到场点交',
             </v-window-item>
             <v-window-item value="discrepancy">
               <v-list><v-list-item v-for="item in store.discrepancies" :key="item.id"><v-list-item-title>{{ item.title }}</v-list-item-title><v-list-item-subtitle>展品 {{ item.exhibitId }} · {{ item.severity === 'major' ? '重大差异' : '轻微差异' }}</v-list-item-subtitle><template #append><v-btn :disabled="item.resolved" color="green" @click="store.resolveDiscrepancy(item.id)">{{ item.resolved ? '已解决' : '确认解决' }}</v-btn></template></v-list-item></v-list>
+            </v-window-item>
+            <v-window-item value="exposure">
+              <ExposureBudget />
             </v-window-item>
           </v-window>
         </v-card>
